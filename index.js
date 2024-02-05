@@ -11,6 +11,26 @@ app.get("/shoppingList", (req, res) => {
   shoppingList.find().then((results) => res.status(200).json(results));
 });
 
+app.get("/shoppingList/:listId", (req, res) => {
+  shoppingList
+    .findById(req.params.listId)
+    .then((results) => {
+      if (results) {
+        res.status(200).json(results);
+      } else {
+        res.status(404).json({ message: "not found" });
+      }
+    })
+    .catch((error) => res.status(400).json({ message: "Bad request" }));
+});
+
+app.post("/shoppingList", (req, res) => {
+  const newShoppingList = new shoppingList(req.body);
+  newShoppingList.save();
+
+  res.status(200).json(newShoppingList);
+});
+
 app.listen(config.port, () => {
   console.log(`App listening at http://localhost:${config.port}`);
 });

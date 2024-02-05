@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const listSchema = new mongoose.Schema({
-  id: Number,
+  listId: Number,
   title: String,
   updatedOn: Date,
   items: [
