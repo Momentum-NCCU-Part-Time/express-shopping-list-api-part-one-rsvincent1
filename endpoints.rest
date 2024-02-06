@@ -1,12 +1,16 @@
 # GET http://localhost:3000/shoppingList/65c159fd5108c60ab4565e7f
 
-POST http://localhost:3000/shoppingList 
+# POST http://localhost:3000/shoppingList 
+# Content-Type: application/json
+
+PATCH http://localhost:3000/shoppingList/65c2a58a930732be0679726f
 Content-Type: application/json
 
 {
-"listId": 1 ,
-"title": "Test list",
-"createdAt": "02/04/2024",
-"updatedAt": "02/04/2024"
+	"_id": "65c2a58a930732be0679726f",
+	"title": "Test list 4 update",
+	"createdAt": "2024-02-06T21:32:58.486Z",
+	"updatedAt": "2024-02-06T21:32:58.486Z",
+	"__v": 0
 }
 

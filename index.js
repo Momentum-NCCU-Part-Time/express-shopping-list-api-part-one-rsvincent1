@@ -1,8 +1,10 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const express = require("express");
+const router = express.Router();
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const mongoose = require("mongoose");
 const config = { port: process.env.PORT || 3000 };
 const shoppingList = require("./models/shoppingList");
@@ -29,14 +31,37 @@ app.get("/shoppingList/:listId", (req, res) => {
 
 app.post("/shoppingList", (req, res) => {
   const newShoppingList = new shoppingList({
-    listId: req.body.listId,
     title: req.body.title,
   });
-  newShoppingList.save();
 
-  res.status(200).json(newShoppingList);
+  newShoppingList
+    .save()
+    .then((newShoppingList) => {
+      res.status(200).json(newShoppingList);
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Internal server error" });
+    });
+});
+
+app.patch("/shoppingList/:_id", (req, res) => {
+  const id = req.params._id;
+  const updateList = req.body;
+
+  shoppingList
+    .findByIdAndUpdate(id, updateList, { new: true })
+    .then((updatedList) => {
+      res
+        .status(200)
+        .json({ message: "List updated successfully", updatedList });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Internal server error" });
+    });
 });
 
 app.listen(config.port, () => {
   console.log(`App listening at http://localhost:${config.port}`);
 });
+
+module.exports = router;
