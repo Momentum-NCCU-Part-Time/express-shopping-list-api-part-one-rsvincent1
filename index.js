@@ -2,6 +2,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 const express = require("express");
 const app = express();
+app.use(express.json());
+const mongoose = require("mongoose");
 const config = { port: process.env.PORT || 3000 };
 const shoppingList = require("./models/shoppingList");
 // const mongoDB = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.lohdtbg.mongodb.net/?retryWrites=true&w=majority`;
@@ -26,7 +28,10 @@ app.get("/shoppingList/:listId", (req, res) => {
 });
 
 app.post("/shoppingList", (req, res) => {
-  const newShoppingList = new shoppingList(req.body);
+  const newShoppingList = new shoppingList({
+    listId: req.body.listId,
+    title: req.body.title,
+  });
   newShoppingList.save();
 
   res.status(200).json(newShoppingList);

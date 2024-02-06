@@ -1,9 +1,10 @@
-### GET http://localhost:3000/shoppingList
+# GET http://localhost:3000/shoppingList/65c159fd5108c60ab4565e7f
 
-### POST http://localhost:3000/shoppingList Content-Type: application/json
+POST http://localhost:3000/shoppingList 
+Content-Type: application/json
 
 {
-"listId": "1",
+"listId": 1 ,
 "title": "Test list",
 "createdAt": "02/04/2024",
 "updatedAt": "02/04/2024"

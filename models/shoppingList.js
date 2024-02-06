@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const listSchema = new mongoose.Schema({
-  listId: { type: Number },
+  listId: Number,
   title: { type: String, maxLength: 50 },
   createdAt: { type: Date, default: Date.now, required: true },
   updatedAt: { type: Date, default: Date.now },
