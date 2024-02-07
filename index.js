@@ -44,20 +44,20 @@ app.post("/shoppingList", (req, res) => {
     });
 });
 
-app.patch("/shoppingList/:_id", (req, res) => {
-  const id = req.params._id;
-  const updateList = req.body;
-
+app.patch("/shoppingList/:listId", (req, res) => {
   shoppingList
-    .findByIdAndUpdate(id, updateList, { new: true })
-    .then((updatedList) => {
-      res
-        .status(200)
-        .json({ message: "List updated successfully", updatedList });
+    .findById(req.params.listId)
+    .then((shoppingList) => {
+      if (shoppingList) {
+        shoppingList.title = req.body.title || shoppingList.title;
+        shoppingList.updatedAt = req.body.updatedAt;
+        shoppingList.save();
+        res.status(200).json(shoppingList);
+      } else {
+        res.status(404).json({ message: "not found" });
+      }
     })
-    .catch((error) => {
-      res.status(500).json({ error: "Internal server error" });
-    });
+    .catch((error) => res.status(400).json({ message: "Bad request" }));
 });
 
 app.listen(config.port, () => {
