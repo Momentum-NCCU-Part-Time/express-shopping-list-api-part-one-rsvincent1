@@ -1,6 +1,6 @@
 GET http://localhost:3000/shoppingList
 ###
-GET http://localhost:3000/shoppingList/65c2a58a930732be0679726f
+GET http://localhost:3000/shoppingList/65c159fd5108c60ab4565e7f
 ###
 POST http://localhost:3000/shoppingList 
 Content-Type: application/json

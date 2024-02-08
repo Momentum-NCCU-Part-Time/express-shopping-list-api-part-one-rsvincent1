@@ -60,14 +60,14 @@ app.patch("/shoppingList/:listId", (req, res) => {
     .catch((error) => res.status(400).json({ message: "Bad request" }));
 });
 
-app.delete("/shoppingList/:listId", (req, res) => {
-  shoppingList.findByIdAndDelete(req.params.listId).then((results) => {
-    if (results) {
-      res.status(200).json(results);
-    } else {
-      res.status(404).json({ message: "not found" });
-    }
-  });
+app.delete("/shoppingList/:listId", async (req, res) => {
+  try {
+    await shoppingList.findByIdAndDelete(req.params.listId);
+    if (!shoppingList) res.status(404).json({ message: "not found" });
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 app.listen(config.port, () => {
