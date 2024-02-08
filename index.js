@@ -60,6 +60,16 @@ app.patch("/shoppingList/:listId", (req, res) => {
     .catch((error) => res.status(400).json({ message: "Bad request" }));
 });
 
+app.delete("/shoppingList/:listId", (req, res) => {
+  shoppingList.findByIdAndDelete(req.params.listId).then((results) => {
+    if (results) {
+      res.status(200).json(results);
+    } else {
+      res.status(404).json({ message: "not found" });
+    }
+  });
+});
+
 app.listen(config.port, () => {
   console.log(`App listening at http://localhost:${config.port}`);
 });
