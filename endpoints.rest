@@ -1,20 +1,27 @@
 GET http://localhost:3000/shoppingList
 ###
-GET http://localhost:3000/shoppingList/65c159fd5108c60ab4565e7f
+GET http://localhost:3000/shoppingList/65c58111dc16c1e4252a2f63
 ###
 POST http://localhost:3000/shoppingList 
 Content-Type: application/json
+
+
 ###
-PATCH http://localhost:3000/shoppingList/65c2a58a930732be0679726f
+PATCH http://localhost:3000/shoppingList/65c58111dc16c1e4252a2f63
 Content-Type: application/json
 
 {
-	"_id": "65c2a58a930732be0679726f",
-	"title": "Test list update 1"
+	
+	"title": "Test list post with array 0",
+	"items": [{
+	"itemName": "soap",
+	"quantity": 1,
+	"done": true
+}]
 }
 
 ###
-DELETE  http://localhost:3000/shoppingList/65c159fd5108c60ab4565e7f
+DELETE  http://localhost:3000/shoppingList/65c57f56dc16c1e4252a2f60
 Content-Type: application/json
 
 

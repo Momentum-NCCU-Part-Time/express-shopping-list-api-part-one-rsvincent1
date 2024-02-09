@@ -4,12 +4,16 @@ const listSchema = new mongoose.Schema({
   title: { type: String, maxLength: 50, required: true },
   createdAt: { type: Date, default: Date.now, required: true },
   updatedAt: { type: Date, default: Date.now },
-  //   items: [
-  //     {
-  //       itemId: Number,
-  //       itemName: String,
-  //     },
-  //   ],
+  items: [
+    {
+      // itemId: Number,
+      itemName: { type: String },
+      quantity: { type: Number },
+      done: { type: Boolean, default: false },
+      createdAt: { type: Date, default: Date.now },
+      updatedAt: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 module.exports = mongoose.model("shoppingList", listSchema);

@@ -51,6 +51,9 @@ app.patch("/shoppingList/:listId", (req, res) => {
       if (shoppingList) {
         shoppingList.title = req.body.title || shoppingList.title;
         shoppingList.updatedAt = req.body.updatedAt;
+        shoppingList.itemName = req.body.itemName;
+        shoppingList.quantity = req.body.quantity;
+        shoppingList.done = req.body.done;
         shoppingList.save();
         res.status(200).json(shoppingList);
       } else {
@@ -64,7 +67,7 @@ app.delete("/shoppingList/:listId", async (req, res) => {
   try {
     await shoppingList.findByIdAndDelete(req.params.listId);
     if (!shoppingList) res.status(404).json({ message: "not found" });
-    res.status(200).send();
+    res.status(200).json({ message: "deleted" });
   } catch (error) {
     res.status(500).send(error);
   }
