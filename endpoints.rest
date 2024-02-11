@@ -1,19 +1,40 @@
 GET http://localhost:3000/shoppingList
 ###
-GET http://localhost:3000/shoppingList/65c58111dc16c1e4252a2f63
+GET http://localhost:3000/shoppingList/65c82be7a36b79223528bc25/items
 ###
-POST http://localhost:3000/shoppingList 
-Content-Type: application/json
 
-
-###
-PATCH http://localhost:3000/shoppingList/65c58111dc16c1e4252a2f63
+POST http://localhost:3000/shoppingList
 Content-Type: application/json
 
 {
 	
-	"title": "Test list post with array 0",
-	"items": [{
+	"title": "new Test list with items2"
+
+}
+
+###
+POST http://localhost:3000/shoppingList/65c82be7a36b79223528bc25/items
+Content-Type: application/json
+
+{
+	
+	"title": "new Test list with items",
+	"items": 
+[{
+	"itemName": "soap",
+	"quantity": 1,
+	"done": true
+}]
+
+}
+
+###
+PATCH http://localhost:3000/shoppingList/65c8dc73a36b79223528bc46/
+Content-Type: application/json
+
+{
+	"items": 
+	[{
 	"itemName": "soap",
 	"quantity": 1,
 	"done": true
@@ -21,7 +42,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE  http://localhost:3000/shoppingList/65c57f56dc16c1e4252a2f60
+DELETE  http://localhost:3000/shoppingList/65c7fce8bd584dae2acefcc9
 Content-Type: application/json
 
 
