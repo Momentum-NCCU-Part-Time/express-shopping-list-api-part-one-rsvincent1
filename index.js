@@ -72,22 +72,22 @@ app.post("/shoppingList/:listId/items", (req, res) => {
 //     });
 // });
 
-// update shopping list title
-// app.patch("/shoppingList/:listId", (req, res) => {
-//   shoppingList
-//     .findById(req.params.listId)
-//     .then((shoppingList) => {
-//       if (shoppingList) {
-//         shoppingList.title = req.body.title || shoppingList.title;
-//         shoppingList.updatedAt = req.body.updatedAt;
-//         shoppingList.save();
-//         res.status(200).json(shoppingList);
-//       } else {
-//         res.status(404).json({ message: "not found" });
-//       }
-//     })
-//     .catch((error) => res.status(400).json({ message: "Bad request" }));
-// });
+//update shopping list title
+app.patch("/shoppingList/:listId", (req, res) => {
+  shoppingList
+    .findById(req.params.listId)
+    .then((shoppingList) => {
+      if (shoppingList) {
+        shoppingList.title = req.body.title || shoppingList.title;
+        shoppingList.updatedAt = req.body.updatedAt;
+        shoppingList.save();
+        res.status(200).json(shoppingList);
+      } else {
+        res.status(404).json({ message: "not found" });
+      }
+    })
+    .catch((error) => res.status(400).json({ message: "Bad request" }));
+});
 
 //update shopping list items
 // app.patch("/shoppingList/:listId", async (req, res) => {
