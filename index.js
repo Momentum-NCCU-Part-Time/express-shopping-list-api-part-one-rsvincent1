@@ -35,22 +35,6 @@ app.get("/shoppingList/:listId", (req, res) => {
     .catch((error) => res.status(400).json({ message: "Bad request" }));
 });
 
-// get individual item from list--might not need
-app.get("/shoppingList/:listId/:itemId", (req, res) => {
-  shoppingList
-    .findById(req.params.listId, {
-      { items: { _id: req.params.itemId } },
-    )
-    .then((results) => {
-      if (results) {
-        res.status(200).json(results);
-      } else {
-        res.status(404).json({ message: "not found" });
-      }
-    })
-    .catch((error) => res.status(400).json({ message: "Bad request" }));
-});
-
 // create shopping list with empty array
 app.post("/shoppingList", (req, res) => {
   const newShoppingList = new shoppingList({
@@ -67,46 +51,60 @@ app.post("/shoppingList", (req, res) => {
     });
 });
 
-// create shopping list with items array--- probably dont need or might 
-// need to change it to add title and items
-app.post("/shoppingList/:listId/items", (req, res) => {
-  const newShoppingList = new shoppingList({
-    title: req.body.title,
-    items: {
-      itemName: req.body.itemName,
-      quantity: req.body.quantity,
-      done: req.body.done,
-    },
-  });
+//**** only adds title with an empty array
+// app.post("/shoppingList/:listId/items", (req, res) => {
+//   const newShoppingList = new shoppingList({
+//     title: req.body.title,
+//     $push: {
+//       items: req.body.items,
+//     },
+//   });
 
-  newShoppingList
-    .save()
-    .then((newShoppingList) => {
-      res.status(200).json(newShoppingList);
-    })
-    .catch((error) => {
-      res.status(400).json({ error: "Bad request" });
-    });
-});
-
-//update shopping list title
-// app.patch("/shoppingList/:listId", (req, res) => {
-//   shoppingList
-//     .findById(req.params.listId)
-//     .then((shoppingList) => {
-//       if (shoppingList) {
-//         shoppingList.title = req.body.title || shoppingList.title;
-//         shoppingList.updatedAt = req.body.updatedAt;
-//         shoppingList.save();
-//         res.status(200).json(shoppingList);
-//       } else {
-//         res.status(404).json({ message: "not found" });
-//       }
+//   newShoppingList
+//     .save()
+//     .then((newShoppingList) => {
+//       res.status(200).json(newShoppingList);
 //     })
-//     .catch((error) => res.status(400).json({ message: "Bad request" }));
+//     .catch((error) => {
+//       res.status(400).json({ error: "Bad request" });
+//     });
 // });
 
-// ** update list by adding items
+// update shopping list title
+app.patch("/shoppingList/:listId", (req, res) => {
+  shoppingList
+    .findById(req.params.listId)
+    .then((shoppingList) => {
+      if (shoppingList) {
+        shoppingList.title = req.body.title || shoppingList.title;
+        shoppingList.updatedAt = req.body.updatedAt;
+        shoppingList.save();
+        res.status(200).json(shoppingList);
+      } else {
+        res.status(404).json({ message: "not found" });
+      }
+    })
+    .catch((error) => res.status(400).json({ message: "Bad request" }));
+});
+
+// WIP get individual item from list
+app.get("/shoppingList/:listId/:itemId", (req, res) => {
+  shoppingList
+    .findOne(req.params.listId, { items: req.body.itemId })
+    // { items: { _id: req.params.itemId } },
+
+    .then((results) => {
+      console.log(req.body.items);
+      if (results) {
+        res.status(200).json(results);
+      } else {
+        res.status(404).json({ message: "not found" });
+      }
+    })
+    .catch((error) => res.status(400).json({ message: "Bad request" }));
+});
+
+// update list by adding items
 app.patch("/shoppingList/:listId/items", (req, res) => {
   shoppingList
     .findByIdAndUpdate(req.params.listId, {
