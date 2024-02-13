@@ -6,8 +6,8 @@ const listSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
   items: [
     {
-      itemName: { String },
-      quantity: { Number },
+      itemName: { type: String },
+      quantity: { type: Number },
       done: { type: Boolean, default: false },
       createdAt: { type: Date, default: Date.now },
       updatedAt: { type: Date, default: Date.now },

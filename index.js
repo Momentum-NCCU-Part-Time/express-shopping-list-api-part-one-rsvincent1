@@ -35,7 +35,24 @@ app.get("/shoppingList/:listId", (req, res) => {
     .catch((error) => res.status(400).json({ message: "Bad request" }));
 });
 
-app.post("/shoppingList/:listId/items", (req, res) => {
+// get individual item from list--might not need
+app.get("/shoppingList/:listId/:itemId", (req, res) => {
+  shoppingList
+    .findById(req.params.listId, {
+      { items: { _id: req.params.itemId } },
+    )
+    .then((results) => {
+      if (results) {
+        res.status(200).json(results);
+      } else {
+        res.status(404).json({ message: "not found" });
+      }
+    })
+    .catch((error) => res.status(400).json({ message: "Bad request" }));
+});
+
+// create shopping list with empty array
+app.post("/shoppingList", (req, res) => {
   const newShoppingList = new shoppingList({
     title: req.body.title,
   });
@@ -50,102 +67,90 @@ app.post("/shoppingList/:listId/items", (req, res) => {
     });
 });
 
-// app.post("/shoppingList/:listId/items", (req, res) => {
-//   const newShoppingList = new shoppingList({
-//     title: req.body.title,
-//     items: [
-//       {
-//         itemName: req.body.itemName,
-//         quantity: req.body.quantity,
-//         done: req.body.done,
-//       },
-//     ],
-//   });
+// create shopping list with items array--- probably dont need or might 
+// need to change it to add title and items
+app.post("/shoppingList/:listId/items", (req, res) => {
+  const newShoppingList = new shoppingList({
+    title: req.body.title,
+    items: {
+      itemName: req.body.itemName,
+      quantity: req.body.quantity,
+      done: req.body.done,
+    },
+  });
 
-//   newShoppingList
-//     .save()
-//     .then((newShoppingList) => {
-//       res.status(200).json(newShoppingList);
-//     })
-//     .catch((error) => {
-//       res.status(500).json({ error: "Internal server error" });
-//     });
-// });
+  newShoppingList
+    .save()
+    .then((newShoppingList) => {
+      res.status(200).json(newShoppingList);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: "Bad request" });
+    });
+});
 
 //update shopping list title
-app.patch("/shoppingList/:listId", (req, res) => {
-  shoppingList
-    .findById(req.params.listId)
-    .then((shoppingList) => {
-      if (shoppingList) {
-        shoppingList.title = req.body.title || shoppingList.title;
-        shoppingList.updatedAt = req.body.updatedAt;
-        shoppingList.save();
-        res.status(200).json(shoppingList);
-      } else {
-        res.status(404).json({ message: "not found" });
-      }
-    })
-    .catch((error) => res.status(400).json({ message: "Bad request" }));
-});
-
-//update shopping list items
-// app.patch("/shoppingList/:listId", async (req, res) => {
-//   try {
-//     const updatedList = await shoppingList.findByIdAndUpdate(
-//       req.params.listId,
-//       {
-//         $push: {
-//           items: {
-//             itemName: req.body.itemName,
-//             quantity: req.body.quantity,
-//             done: req.body.done,
-//             createdAt: new Date(),
-//             updatedAt: new Date(),
-//           },
-//         },
-//         // updatedAt: new Date(), // Update the updatedAt field of the list
-//       },
-//       { new: true } // Return the updated document
-//     );
-
-//     if (updatedList) {
-//       res.status(200).json(updatedList);
-//     } else {
-//       res.status(404).json({ message: "List not found" });
-//     }
-//   } catch (error) {
-//     res.status(400).json({ message: "Bad request" });
-//   }
+// app.patch("/shoppingList/:listId", (req, res) => {
+//   shoppingList
+//     .findById(req.params.listId)
+//     .then((shoppingList) => {
+//       if (shoppingList) {
+//         shoppingList.title = req.body.title || shoppingList.title;
+//         shoppingList.updatedAt = req.body.updatedAt;
+//         shoppingList.save();
+//         res.status(200).json(shoppingList);
+//       } else {
+//         res.status(404).json({ message: "not found" });
+//       }
+//     })
+//     .catch((error) => res.status(400).json({ message: "Bad request" }));
 // });
 
+// ** update list by adding items
 app.patch("/shoppingList/:listId/items", (req, res) => {
   shoppingList
-    .findById(req.params.listId)
+    .findByIdAndUpdate(req.params.listId, {
+      $push: {
+        items: req.body.items,
+      },
+    })
     .then((shoppingList) => {
       if (shoppingList) {
-        const items = {
-          itemName: req.body.itemName,
-          quantity: req.body.quantity,
-          done: req.body.done,
-        };
-        console.log(req.body.itemName);
-        shoppingList.items.push(items);
         res.status(200).json(shoppingList);
       } else {
         res.status(404).json({ message: "not found" });
       }
-    })
-    .catch((error) => res.status(400).json({ message: "Bad request" }));
+    });
 });
 
+// Removes individual item from shopping list
+app.patch("/shoppingList/:listId/:itemId", (req, res) => {
+  shoppingList
+    .findByIdAndUpdate(req.params.listId, {
+      $pull: {
+        items: { _id: req.params.itemId },
+      },
+    })
+    .then((shoppingList) => {
+      if (shoppingList) {
+        res.status(200).json(shoppingList);
+      } else {
+        res.status(404).json({ message: "not found" });
+      }
+    });
+});
+
+// Delete shopping list
 app.delete("/shoppingList/:listId", async (req, res) => {
   try {
     await shoppingList.findByIdAndDelete(req.params.listId);
-    if (!shoppingList) res.status(404).json({ message: "not found" });
-    res.status(200).json({ message: "deleted" });
+    if (!shoppingList) {
+      res.status(404).json({ message: "not found" });
+    } else {
+      res.status(200).json({ message: "deleted" });
+    }
   } catch (error) {
-    res.status(500).send(error);
+    res.status(400).json({ message: "Bad request" });
   }
 });
 
