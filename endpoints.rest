@@ -1,6 +1,6 @@
 GET http://localhost:3000/shoppingList
 ###
-GET http://localhost:3000/shoppingList/65cab2b59e8d2f2c0e8ebd70/65cab2c99e8d2f2c0e8ebd72
+GET http://localhost:3000/shoppingList/65d12c8ab87bbbae589276fc
 ###
 
 POST http://localhost:3000/shoppingList
@@ -8,20 +8,20 @@ Content-Type: application/json
 
 {
 	
-	"title": "new post items test"
+	"title": "New Test List"
 
 }
 
 ###
-POST http://localhost:3000/shoppingList/65ca9e3ce37fbab0e08de028/items
+POST http://localhost:3000/shoppingList/65cea828bc8962db43b3821a/items
 Content-Type: application/json
 
 {
 	
-	"title": "another post with items test",
+	
 		"items": 
 	[{
-	"itemName": "toothbrush",
+	"itemName": "soap",
 	"quantity": 1,
 	"done": true
 }] 
@@ -29,24 +29,26 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3000/shoppingList/65cbe5b2d55ab26338ff6dac/items
+PATCH http://localhost:3000/shoppingList/65d12c8ab87bbbae589276fc/items
 Content-Type: application/json
 
 {
 	"items": 
 	{
-	"itemName": "toothbrush",
+	"itemName": "water filter",
 	"quantity": 1,
 	"done": true
 }
 }
 
 ###
-PATCH http://localhost:3000/shoppingList/65cab2b59e8d2f2c0e8ebd70/65cab32f6946a236c83d9bcd
+DELETE  http://localhost:3000/shoppingList/65d12c8ab87bbbae589276fc/65d2d531a5d4293d216a1350
 Content-Type: application/json
 
+
+
 ###
-DELETE  http://localhost:3000/shoppingList/65cab2b59e8d2f2c0e8ebd70/65cab32f6946a236c83d9bcd
+DELETE  http://localhost:3000/shoppingList/65cab2b59e8d2f2c0e8ebd70
 Content-Type: application/json
 
 

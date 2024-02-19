@@ -9,6 +9,9 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const config = { port: process.env.PORT || 3000 };
 
+var cors = require("cors");
+app.use(cors());
+
 app.use(morgan("dev"));
 const shoppingList = require("./models/shoppingList");
 // const mongoDB = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.lohdtbg.mongodb.net/?retryWrites=true&w=majority`;
@@ -87,23 +90,6 @@ app.patch("/shoppingList/:listId", (req, res) => {
     .catch((error) => res.status(400).json({ message: "Bad request" }));
 });
 
-// WIP get individual item from list
-app.get("/shoppingList/:listId/:itemId", (req, res) => {
-  shoppingList
-    .findOne(req.params.listId, { items: req.body.itemId })
-    // { items: { _id: req.params.itemId } },
-
-    .then((results) => {
-      console.log(req.body.items);
-      if (results) {
-        res.status(200).json(results);
-      } else {
-        res.status(404).json({ message: "not found" });
-      }
-    })
-    .catch((error) => res.status(400).json({ message: "Bad request" }));
-});
-
 // update list by adding items
 app.patch("/shoppingList/:listId/items", (req, res) => {
   shoppingList
@@ -114,7 +100,7 @@ app.patch("/shoppingList/:listId/items", (req, res) => {
     })
     .then((shoppingList) => {
       if (shoppingList) {
-        res.status(200).json(shoppingList);
+        res.status(200).send(shoppingList);
       } else {
         res.status(404).json({ message: "not found" });
       }
@@ -122,34 +108,50 @@ app.patch("/shoppingList/:listId/items", (req, res) => {
 });
 
 // Removes individual item from shopping list
-app.patch("/shoppingList/:listId/:itemId", (req, res) => {
+// app.patch("/shoppingList/:listId/:itemId", (req, res) => {
+//   shoppingList
+//     .findByIdAndUpdate(req.params.listId, {
+//       $pull: {
+//         items: { _id: req.params.itemId },
+//       },
+//     })
+//     .then((shoppingList) => {
+//       if (shoppingList) {
+//         res.status(200).json(shoppingList);
+//       } else {
+//         res.status(404).json({ message: "not found" });
+//       }
+//     });
+// });
+
+// Deletes individual item from shopping list
+app.delete("/shoppingList/:listId/:itemId", (req, res) => {
   shoppingList
-    .findByIdAndUpdate(req.params.listId, {
-      $pull: {
-        items: { _id: req.params.itemId },
-      },
-    })
+    .findById(req.params.listId)
     .then((shoppingList) => {
       if (shoppingList) {
-        res.status(200).json(shoppingList);
+        shoppingList.items.id(req.params.itemId).deleteOne();
+        shoppingList.save();
+        res.status(200).json({ message: "item deleted" });
       } else {
         res.status(404).json({ message: "not found" });
       }
-    });
+    })
+    .catch((error) => res.status(400).json({ message: "Bad request" }));
 });
 
 // Delete shopping list
-app.delete("/shoppingList/:listId", async (req, res) => {
-  try {
-    await shoppingList.findByIdAndDelete(req.params.listId);
-    if (!shoppingList) {
-      res.status(404).json({ message: "not found" });
-    } else {
-      res.status(200).json({ message: "deleted" });
-    }
-  } catch (error) {
-    res.status(400).json({ message: "Bad request" });
-  }
+app.delete("/shoppingList/:listId", (req, res) => {
+  shoppingList
+    .findByIdAndDelete(req.params.listId)
+    .then((shoppingList) => {
+      if (shoppingList) {
+        res.status(200).json({ message: "deleted" });
+      } else {
+        res.status(404).json({ message: "not found" });
+      }
+    })
+    .catch((error) => res.status(400).json({ message: "Bad request" }));
 });
 
 app.listen(config.port, () => {
