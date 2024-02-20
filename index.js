@@ -124,6 +124,40 @@ app.patch("/shoppingList/:listId/items", (req, res) => {
 //     });
 // });
 
+// WIP update individual purchased item boolean
+app.patch("/shoppingList/:listId/:itemId", (req, res) => {
+  shoppingList.findById(req.params.listId).then((shoppingList) => {
+    if (!shoppingList) {
+      res.status(404).json({ message: "Shopping list not found" });
+    } else {
+      const purchased = shoppingList.items.done(req.params.itemId);
+      if (!purchased) {
+        res.status(404).json({ message: "item not found" });
+      } else {
+        shoppingList
+          .save()
+          .then(() => res.status(200).json(note))
+          .catch((error) => res.status(400).json({ message: error.message }));
+      }
+    }
+  });
+});
+
+// app.patch("/shoppingList/:listId/:itemId", (req, res) => {
+//   shoppingList
+//     .findById(req.params.listId)
+//     .then((shoppingList) => {
+//       if (shoppingList) {
+//         shoppingList.items.done(req.params.itemId).up();
+//         shoppingList.save();
+//         res.status(200).json({ message: "item purchased" });
+//       } else {
+//         res.status(404).json({ message: "not found" });
+//       }
+//     })
+//     .catch((error) => res.status(400).json({ message: "Bad request" }));
+// });
+
 // Deletes individual item from shopping list
 app.delete("/shoppingList/:listId/:itemId", (req, res) => {
   shoppingList
